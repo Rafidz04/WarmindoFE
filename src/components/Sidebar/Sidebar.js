@@ -147,44 +147,7 @@ function Sidebar({ routes, image, background }) {
               WARMINDO 88
             </a>
           </div>
-          <div className='user'>
-            <div className='photo'>
-              {/* <img
-                alt='...'
-                src={require('assets/img/default-avatar.png').default}
-              ></img> */}
-            </div>
-            <div className='info'>
-              {/* <a
-                className={userCollapseState ? 'collapsed' : ''}
-                data-toggle='collapse'
-                href='#pablo'
-                onClick={(e) => {
-                  e.preventDefault();
-                  setUserCollapseState(!userCollapseState);
-                }}
-                aria-expanded={userCollapseState}
-              > */}
-              <span>{auth.username}</span>
-              {/* </a> */}
-              {/* <Collapse id='collapseExample' in={userCollapseState}>
-                <div>
-                  <Nav as='ul'>
-                    <li>
-                      <a
-                        className='profile-dropdown'
-                        href='#pablo'
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <span className='sidebar-mini'>MP</span>
-                        <span className='sidebar-normal'>My Profile</span>
-                      </a>
-                    </li>
-                  </Nav>
-                </div>
-              </Collapse> */}
-            </div>
-          </div>
+          
           <Nav as='ul'>{createLinks(routes)}</Nav>
         </div>
         <div

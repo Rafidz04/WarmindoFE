@@ -1,4 +1,9 @@
 import React from "react";
+import Select from "react-select";
+import { addStok, editStok, getAllStock } from "../../stores";
+//4
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   Badge,
   Button,
@@ -13,140 +18,82 @@ import {
   Container,
   Row,
   Col,
+  ModalBody,
 } from "react-bootstrap";
 import ReactTable from "components/ReactTable/ReactTable.js";
+import CurrencyFormat from "react-currency-format";
 
 function StokBarang() {
-  const dataTable = [
-    ["Tiger Nixon", "System Architect", "Edinburgh", "61"],
-    ["Garrett Winters", "Accountant", "Tokyo", "63"],
-    ["Ashton Cox", "Junior Technical Author", "San Francisco", "66"],
-    ["Cedric Kelly", "Senior Javascript Developer", "Edinburgh", "22"],
-    ["Airi Satou", "Accountant", "Tokyo", "33"],
-    ["Brielle Williamson", "Integration Specialist", "New York", "61"],
-    ["Herrod Chandler", "Sales Assistant", "San Francisco", "59"],
-    ["Rhona Davidson", "Integration Specialist", "Tokyo", "55"],
-    ["Colleen Hurst", "Javascript Developer", "San Francisco", "39"],
-    ["Sonya Frost", "Software Engineer", "Edinburgh", "23"],
-    ["Jena Gaines", "Office Manager", "London", "30"],
-    ["Quinn Flynn", "Support Lead", "Edinburgh", "22"],
-    ["Charde Marshall", "Regional Director", "San Francisco", "36"],
-    ["Haley Kennedy", "Senior Marketing Designer", "London", "43"],
-    ["Tatyana Fitzpatrick", "Regional Director", "London", "19"],
-    ["Michael Silva", "Marketing Designer", "London", "66"],
-    ["Paul Byrd", "Chief Financial Officer (CFO)", "New York", "64"],
-    ["Gloria Little", "Systems Administrator", "New York", "59"],
-    ["Bradley Greer", "Software Engineer", "London", "41"],
-    ["Dai Rios", "Personnel Lead", "Edinburgh", "35"],
-    ["Jenette Caldwell", "Development Lead", "New York", "30"],
-    ["Yuri Berry", "Chief Marketing Officer (CMO)", "New York", "40"],
-    ["Caesar Vance", "Pre-Sales Support", "New York", "21"],
-    ["Doris Wilder", "Sales Assistant", "Sidney", "23"],
-    ["Angelica Ramos", "Chief Executive Officer (CEO)", "London", "47"],
-    ["Gavin Joyce", "Developer", "Edinburgh", "42"],
-    ["Jennifer Chang", "Regional Director", "Singapore", "28"],
-    ["Brenden Wagner", "Software Engineer", "San Francisco", "28"],
-    ["Fiona Green", "Chief Operating Officer (COO)", "San Francisco", "48"],
-    ["Shou Itou", "Regional Marketing", "Tokyo", "20"],
-    ["Michelle House", "Integration Specialist", "Sidney", "37"],
-    ["Suki Burks", "Developer", "London", "53"],
-    ["Prescott Bartlett", "Technical Author", "London", "27"],
-    ["Gavin Cortez", "Team Leader", "San Francisco", "22"],
-    ["Martena Mccray", "Post-Sales support", "Edinburgh", "46"],
-    ["Unity Butler", "Marketing Designer", "San Francisco", "47"],
-    ["Howard Hatfield", "Office Manager", "San Francisco", "51"],
-    ["Hope Fuentes", "Secretary", "San Francisco", "41"],
-    ["Vivian Harrell", "Financial Controller", "San Francisco", "62"],
-    ["Timothy Mooney", "Office Manager", "London", "37"],
-    ["Jackson Bradshaw", "Director", "New York", "65"],
-    ["Olivia Liang", "Support Engineer", "Singapore", "64"],
-  ];
+  //2
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.authReducer);
+  // console.log(">>>>>>>>>>>>>>.",auth.listStock)
+  const history = useHistory();
 
-  const [data, setData] = React.useState(
-    dataTable.map((prop, key) => {
-      return {
-        id: key,
-        name: prop[0],
-        position: prop[1],
-        office: prop[2],
-        age: prop[3],
-        actions: (
-          // we've added some custom button actions
-          <div className="actions-right">
-            {/* use this button to add a like kind of action */}
-            <Button
-              onClick={() => {
-                let obj = data.find((o) => o.id === key);
-                alert(
-                  "You've clicked LIKE button on \n{ \nName: " +
-                    obj.name +
-                    ", \nposition: " +
-                    obj.position +
-                    ", \noffice: " +
-                    obj.office +
-                    ", \nage: " +
-                    obj.age +
-                    "\n}."
-                );
-              }}
-              variant="info"
-              size="sm"
-              className="text-info btn-link like"
-            >
-              <i className="fa fa-heart" />
-            </Button>{" "}
-            {/* use this button to add a edit kind of action */}
-            <Button
-              onClick={() => {
-                let obj = data.find((o) => o.id === key);
-                alert(
-                  "You've clicked EDIT button on \n{ \nName: " +
-                    obj.name +
-                    ", \nposition: " +
-                    obj.position +
-                    ", \noffice: " +
-                    obj.office +
-                    ", \nage: " +
-                    obj.age +
-                    "\n}."
-                );
-              }}
-              variant="warning"
-              size="sm"
-              className="text-warning btn-link edit"
-            >
-              <i className="fa fa-edit" />
-            </Button>{" "}
-            {/* use this button to remove the data row */}
-            <Button
-              onClick={() => {
-                var newData = data;
-                newData.find((o, i) => {
-                  if (o.id === key) {
-                    // here you should add some custom code so you can delete the data
-                    // from this component and from your server as well
-                    newData.splice(i, 1);
-                    return true;
-                  }
-                  return false;
-                });
-                setData([...newData]);
-              }}
-              variant="danger"
-              size="sm"
-              className="btn-link remove text-danger"
-            >
-              <i className="fa fa-times" />
-            </Button>{" "}
-          </div>
-        ),
-      };
-    })
-  );
   const [modal, setModal] = React.useState(false);
-  const [password, setPassword] = React.useState("");
-  const [nama, setStok] = React.useState("");
+  const [modalEdit, setModalEdit] = React.useState(false);
+  const [harga, setHarga] = React.useState(0);
+  const [totalStock, setTotalStock] = React.useState(0);
+  const [kategori, setKategori] = React.useState("");
+  const [namaBarang, setNamaBarang] = React.useState("");
+  const [validasi, setValidasi] = React.useState(false);
+  const [message, setMessage] = React.useState("");
   const notificationAlertRef = React.useRef(null);
+  const [foto, setFoto] = React.useState(null);
+  const [idStock, setIdStock] = React.useState("");
+
+  //3
+  const [listStock, setListStock] = React.useState([]);
+  const dataTable = [];
+
+  //1
+  React.useEffect(() => {
+    getAllStock(dispatch);
+  }, []);
+
+  //5
+  React.useEffect(() => {
+    let tmp = [];
+    auth.listStock &&
+      auth.listStock.map((val) => {
+        // let harga = 0
+        // val.data.harga((value)=>{
+        //   harga+= value.totalStock
+        // })
+        tmp.push({
+          ...val,
+          harga: (
+            <CurrencyFormat
+              thousandSeparator={true}
+              prefix={"Rp "}
+              displayType={"text"}
+              value={val.harga}
+            />
+          ),
+          //harga:`Rp ${val.harga}`,
+          image: <img src={val.fotoProduk}></img>,
+          actions: (
+            <div className="actions-right">
+              <Button
+                onClick={() => {
+                  console.log(val);
+                  setIdStock(val._id);
+                  setTotalStock(val.totalStock);
+                  setHarga(val.harga);
+                  setModalEdit(!modalEdit);
+                }}
+                size="sm"
+                className="primary"
+              >
+                Edit
+                {/* <i className='fa fa-edit' /> */}
+              </Button>{" "}
+            </div>
+          ),
+        });
+      }, []);
+    setListStock(tmp);
+  }, [auth.listStock]);
   return (
     <Container fluid>
       <Row>
@@ -166,34 +113,37 @@ function StokBarang() {
           </Card.Header>
           <Card.Body>
             <ReactTable
-              data={data}
+              //6
+              data={listStock}
               columns={[
                 {
-                  Header: "Name",
-                  accessor: "name",
+                  Header: "Nama Barang",
+                  accessor: "namaBarang",
+                },
+
+                {
+                  Header: "Harga",
+                  accessor: "harga",
                 },
                 {
-                  Header: "Position",
-                  accessor: "position",
+                  Header: "Total Stock Barang",
+                  accessor: "totalStock",
                 },
                 {
-                  Header: "Office",
-                  accessor: "office",
+                  Header: "Kategori",
+                  accessor: "kategori",
                 },
                 {
-                  Header: "Age",
-                  accessor: "age",
+                  Header: "Foto Produk",
+                  accessor: "image",
                 },
                 {
-                  Header: "Actions",
+                  Header: "Aksi",
                   accessor: "actions",
                   sortable: false,
                   filterable: false,
                 },
               ]}
-              /*
-                    You can choose between primary-pagination, info-pagination, success-pagination, warning-pagination, danger-pagination or none - which will make the pagination buttons gray
-                  */
               className="-striped -highlight primary-pagination"
             />
           </Card.Body>
@@ -217,17 +167,17 @@ function StokBarang() {
                 <Card>
                   <Card.Header>
                     <Card.Header>
-                      <Card.Title as="h4">Add User</Card.Title>
+                      <Card.Title as="h4">Add Stok</Card.Title>
                     </Card.Header>
                   </Card.Header>
                   <Card.Body>
                     <Row>
                       <Col sm="12">
                         <Form.Group>
-                          <label>Nama</label>
+                          <label>Nama Barang</label>
                           <Form.Control
                             onChange={(e) => {
-                              setStok(e.target.value);
+                              setNamaBarang(e.target.value);
                               // setDataBaru({
                               //   ...dataBaru,
                               //   gedung: e.target.value,
@@ -242,99 +192,105 @@ function StokBarang() {
                     <Row>
                       <Col sm="12">
                         <Form.Group>
-                          <label>Password</label>
+                          <label>Total Stock</label>
                           <Form.Control
                             onChange={(e) => {
-                              setPassword(e.target.value);
+                              setTotalStock(e.target.value);
                               // setDataBaru({
                               //   ...dataBaru,
                               //   gedung: e.target.value,
                               // });
                             }}
                             // placeholder="Masukan Nama Gedung"
-                            type="password"
+                            type="number"
+                            min={0}
                           ></Form.Control>
                         </Form.Group>
                       </Col>
                     </Row>
                     <Row>
-                      <Col md="3"></Col>
-                      <Col md="9">
-                        <Form.Check>
-                          <Form.Check.Label>
-                            <Form.Check.Input
-                              defaultValue=""
-                              type="checkbox"
-                            ></Form.Check.Input>
-                            <span className="form-check-sign"></span>
-                            Remember me
-                          </Form.Check.Label>
-                        </Form.Check>
-                      </Col>
-                    </Row>
-                    {/* <Row>
                       <Col sm="12">
                         <Form.Group>
-                          <label>Description</label>
+                          <label>Harga</label>
                           <Form.Control
                             onChange={(e) => {
-                              setDeskripsiTraining(e.target.value);
-                              // setProject({
-                              //   ...project,
-                              //   deskripsi: e.target.value,
+                              setHarga(e.target.value);
+                              // setDataBaru({
+                              //   ...dataBaru,
+                              //   gedung: e.target.value,
                               // });
                             }}
-                            // placeholder="Tuliskan Deskripsi Project"
-                            as="textarea"
+                            // placeholder="Masukan Nama Gedung"
+                            type="number"
+                            min={0}
                           ></Form.Control>
                         </Form.Group>
                       </Col>
-                    </Row> */}
-                    {/* <Row>
-                      <Col sm="6">
-                        <label>Start Date</label>
+                    </Row>
+                    <Row>
+                      <Col sm="12">
                         <Form.Group>
-                          <ReactDatetime
-                            inputProps={{
-                              className: "form-control",
-                              placeholder: "Date Picker Here",
-                            }}
-                            onChange={(e) => {
-                              setDariTgl(e.toDate().setHours(7, 0, 0, 0));
-                            }}
-                            value={dariTgl}
-                            initialValue={dariTgl}
-                            timeFormat={false}
-                          ></ReactDatetime>
+                          <label>Status</label>
+                          <Select
+                            className="react-select primary"
+                            classNamePrefix="react-select"
+                            name="singleSelect"
+                            value={kategori}
+                            onChange={(value) => setKategori(value)}
+                            options={[
+                              { value: "makanan", label: "Makanan" },
+                              { value: "minuman", label: "Minuman" },
+                            ]}
+                            placeholder="Pilih"
+                          />
                         </Form.Group>
                       </Col>
-                      <Col sm="6">
-                        <label>End Date</label>
-                        <Form.Group>
-                          <ReactDatetime
-                            inputProps={{
-                              className: "form-control",
-                              placeholder: "Date Picker Here",
-                            }}
-                            onChange={(e) => {
-                              setSmpTgl(e.toDate().setHours(23, 59, 0, 0));
-                            }}
-                            value={smpTgl}
-                            initialValue={smpTgl}
-                            timeFormat={false}
-                          ></ReactDatetime>
-                        </Form.Group>
-                      </Col>
-                    </Row> */}
+                    </Row>
 
-                    <Button
-                      className="btn-fill pull-right"
-                      type="submit"
-                      variant="info"
-                      onClick={modal}
-                    >
-                      Submit
-                    </Button>
+                    <input
+                      type={"file"}
+                      onChange={(e) => {
+                        setFoto(e.target.files[0]);
+                      }}
+                    />
+                    <p>
+                      {validasi ? (
+                        <label style={{ color: "red" }}>{message}</label>
+                      ) : null}
+                    </p>
+
+                    <p>
+                      <Button
+                        className="btn-fill pull-right"
+                        type="submit"
+                        variant="info"
+                        onClick={(e) => {
+                          e.preventDefault();
+
+                          addStok(dispatch, {
+                            namaBarang: namaBarang,
+                            harga: harga,
+                            totalStock: totalStock,
+                            kategori: kategori,
+                            fotoProduk: foto,
+                          }).then((val) => {
+                            if (val.status === 200) {
+                              //7
+                              setModal(!modal);
+                              // window.location.reload();
+                              getAllStock(dispatch);
+                              setValidasi(false);
+                            } else {
+                              setValidasi(true);
+                              setMessage(val.data.message);
+                            }
+                          });
+                        }}
+                      >
+                        Submit
+                      </Button>
+                    </p>
+
                     <div className="clearfix"></div>
                   </Card.Body>
                 </Card>
@@ -342,6 +298,94 @@ function StokBarang() {
             </Col>
           </Row>
         </Modal.Body>
+      </Modal>
+
+      <Modal
+        size="lg"
+        show={modalEdit}
+        onHide={() => setModalEdit(!modalEdit)}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          {/* <Modal.Title id="example-modal-sizes-title-lg">
+            Large Modal
+          </Modal.Title> */}
+        </Modal.Header>
+        <ModalBody>
+          <Row>
+            <Col md="12">
+              <Form action="" className="form" method="">
+                <Card.Title as="h5">Edit Stok</Card.Title>
+                <Row>
+                  <Col sm="12">
+                    <Form.Group>
+                      <label>Total Stock</label>
+                      <Form.Control
+                        value={totalStock}
+                        onChange={(e) => {
+                          setTotalStock(e.target.value);
+                          // setDataBaru({
+                          //   ...dataBaru,
+                          //   gedung: e.target.value,
+                          // });
+                        }}
+                        // placeholder="Masukan Nama Gedung"
+                        type="number"
+                        min={0}
+                      ></Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col sm="12">
+                    <Form.Group>
+                      <label>Harga</label>
+                      <Form.Control
+                        value={harga}
+                        onChange={(e) => {
+                          setHarga(e.target.value);
+                          // setDataBaru({
+                          //   ...dataBaru,
+                          //   gedung: e.target.value,
+                          // });
+                        }}
+                        // placeholder="Masukan Nama Gedung"
+                        type="number"
+                        min={0}
+                      ></Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+          </Row>
+          <p>
+            <Button
+              className="btn-fill pull-right"
+              type="submit"
+              variant="info"
+              onClick={(e) => {
+                e.preventDefault();
+                editStok(dispatch, {
+                  idStock: idStock,
+                  totalStock: totalStock,
+                  harga: harga,
+                }).then((respon) => {
+                  if (respon.status === 200) {
+                    setModalEdit(!modalEdit);
+                    getAllStock(dispatch);
+                    setIdStock("");
+                    setTotalStock(0);
+                    setHarga(0);
+                  }
+                });
+                // console.log(idStock, totalStock, harga);
+              }}
+            >
+              Submit
+            </Button>
+          </p>
+        </ModalBody>
       </Modal>
     </Container>
   );

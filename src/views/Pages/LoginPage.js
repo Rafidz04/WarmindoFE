@@ -69,7 +69,8 @@ function LoginPage() {
                   </Card.Body>
                   <Card.Footer className='ml-auto mr-auto'>
                     <Button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault()
                         login(dispatch, { username, password }, history);
                       }}
                       className='btn-wd'

@@ -14,8 +14,8 @@ export * from './monitoring/function';
 export * from './errorHandler';
 // server api
 // export const baseUrl = process.env.REACT_APP_URL
-export const baseUrl = 'https://apijti.ptbap.net/';
-// export const baseUrl = 'http://192.168.100.23:9030/';
+// export const baseUrl = 'https://apijti.ptbap.net/';
+export const baseUrl = 'http://192.168.70.78:9030/';
 
 export const baseAxios = axios.create({
   baseURL: baseUrl,
