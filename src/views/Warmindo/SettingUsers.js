@@ -1,8 +1,9 @@
 import React from "react";
 import Select from "react-select";
-import { addUser, getAllUser } from "../../stores";
+import { addUser, deleteUser, getAllUser } from "../../stores";
 import { useDispatch,useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import Swal from 'sweetalert2'
 import {
   Badge,
   Button,
@@ -51,6 +52,43 @@ function SettingUsers() {
       tmp.push({
         ...val,
         status:val.role===1?"owner":"kasir",
+        actions: (
+          val.role===1?null:
+          <div className="actions-right">
+            <Button
+              onClick={() => {
+                Swal.fire({
+                  title: 'Are you sure?',
+                  text: "You won't be able to revert this!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    deleteUser(dispatch,val._id).then((response)=>{
+                      getAllUser(dispatch)
+                      Swal.fire(
+                        'Deleted!',
+                        'User berhasil dihapus!',
+                        'success'
+                      )
+                    })
+                    
+                  }
+                })
+               
+              }}
+              size="sm"
+              variant="danger"
+              className="danger"
+            >
+              Delete
+              {/* <i className='fa fa-edit' /> */}
+            </Button>{" "}
+          </div>
+        ),
         // image:<img src={val.fotoProduk}></img>
       })
     },[])
@@ -90,7 +128,7 @@ function SettingUsers() {
                   accessor: "status",
                 },
                 {
-                  Header: "",
+                  Header: "Aksi",
                   accessor: "actions",
                   sortable: false,
                   filterable: false,
@@ -221,8 +259,17 @@ function SettingUsers() {
                             history
                           ).then((val) => {
                             if (val.status === 200) {
-                              window.location.reload()
+                              // window.location.reload()
+                              getAllUser(dispatch)
                               setValidasi(false);
+                              Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'User berhasil ditambahkan!',
+                                showConfirmButton: false,
+                                timer: 1500
+                              })
+                              setModal(!modal)
                             } else {
                               setValidasi(true);
                               setMessage(val.data.message);

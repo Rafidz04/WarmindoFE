@@ -6,16 +6,14 @@ import { reduxSoldierMiddleware } from 'redux-soldier';
 // reducer
 import authReducer from './auth';
 import dashboardReducer from './dashboard';
-import monitoringReducer from './monitoring';
 
 // function
 export * from './auth/function';
-export * from './monitoring/function';
 export * from './errorHandler';
 // server api
 // export const baseUrl = process.env.REACT_APP_URL
-// export const baseUrl = 'https://apijti.ptbap.net/';
-export const baseUrl = 'http://192.168.70.78:9030/';
+export const baseUrl = 'http://192.168.1.11:9030/';
+// export const baseUrl = 'https://uptight-bee-woolens.cyclic.app/';
 
 export const baseAxios = axios.create({
   baseURL: baseUrl,
@@ -25,7 +23,6 @@ export const baseAxios = axios.create({
 const rootReducer = combineReducers({
   authReducer,
   dashboardReducer,
-  monitoringReducer,
 });
 
 export const store = createStore(

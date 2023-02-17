@@ -3,6 +3,7 @@ import React from "react";
 import ChartistGraph from "react-chartist";
 // react components used to create a SVG / Vector map
 import { VectorMap } from "react-jvectormap";
+import CurrencyFormat from "react-currency-format";
 
 // react-bootstrap components
 import {
@@ -20,8 +21,61 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBowlFood,
+  faMoneyBill1Wave,
+  faMugHot,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllStock } from "stores";
+import { getAllOrder } from "stores";
+import { getAllTotalPendapatan } from "stores";
+import { getGrafikPenghasilan } from "stores";
 
 function Dashboard() {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.authReducer);
+  const [jumlahMakanan, setJumlahMakanan] = React.useState(0);
+  const [jumlahMinuman, setJumlahMinuman] = React.useState(0);
+  const [jumlahPelanggan, setJumlahPelanggan] = React.useState(0);
+  const [pendapatan,setPendapatan] = React.useState(0)
+  const [listPenghasilan,setListPenghasilan] = React.useState([])
+  const max = Math.max(...listPenghasilan);
+
+  React.useEffect(() => {
+    getAllStock(dispatch);
+    getAllOrder(dispatch);
+    getAllTotalPendapatan(dispatch)
+    getGrafikPenghasilan(dispatch)
+  }, []);
+
+  React.useEffect(() => {
+    let tmpMakanan = [];
+    let tmpMinuman = [];
+    let penghasilan = 0;
+    auth.listStock &&
+      auth.listStock.map((val) => {
+        if (val.kategori === "makanan") {
+          tmpMakanan.push(val);
+        } else {
+          tmpMinuman.push(val);
+        }
+        setJumlahMakanan(tmpMakanan.length);
+        setJumlahMinuman(tmpMinuman.length);
+      });
+    setJumlahPelanggan(auth.listOrder && auth.listOrder.length);
+    auth.listPendapatan &&
+      auth.listPendapatan.map((val) => {
+        penghasilan+=val.totalKuantitas
+      });
+
+      setPendapatan(penghasilan)
+      setListPenghasilan(auth.grafikPenghasilan)
+      
+  }, [auth.listStock, auth.listOrder,auth.listPendapatan,auth.grafikPenghasilan]);
+
   return (
     <>
       <Container fluid>
@@ -32,13 +86,13 @@ function Dashboard() {
                 <Row>
                   <Col xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-chart text-warning"></i>
+                      <FontAwesomeIcon icon={faBowlFood} color={"blue"} />
                     </div>
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Number</p>
-                      <Card.Title as="h4">150GB</Card.Title>
+                      <p className="card-category">Jenis Makanan</p>
+                      <Card.Title as="h4">{jumlahMakanan} Makanan</Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -46,8 +100,8 @@ function Dashboard() {
               <Card.Footer>
                 <hr></hr>
                 <div className="stats">
-                  <i className="fas fa-redo mr-1"></i>
-                  Update Now
+                  {/* <i className="fas fa-redo mr-1"></i> */}
+                  Detail
                 </div>
               </Card.Footer>
             </Card>
@@ -58,13 +112,13 @@ function Dashboard() {
                 <Row>
                   <Col xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-light-3 text-success"></i>
+                      <FontAwesomeIcon icon={faMugHot} color={"red"} />
                     </div>
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Revenue</p>
-                      <Card.Title as="h4">$ 1,345</Card.Title>
+                      <p className="card-category">Jenis Minuman</p>
+                      <Card.Title as="h4">{jumlahMinuman} Minuman</Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -72,8 +126,8 @@ function Dashboard() {
               <Card.Footer>
                 <hr></hr>
                 <div className="stats">
-                  <i className="far fa-calendar-alt mr-1"></i>
-                  Last day
+                  {/* <i className="far fa-calendar-alt mr-1"></i> */}
+                  Detail
                 </div>
               </Card.Footer>
             </Card>
@@ -84,13 +138,13 @@ function Dashboard() {
                 <Row>
                   <Col xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-vector text-danger"></i>
+                      <FontAwesomeIcon icon={faUsers} color={"black"} />
                     </div>
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Errors</p>
-                      <Card.Title as="h4">23</Card.Title>
+                      <p className="card-category">Pembeli</p>
+                      <Card.Title as="h4">{jumlahPelanggan}</Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -98,8 +152,8 @@ function Dashboard() {
               <Card.Footer>
                 <hr></hr>
                 <div className="stats">
-                  <i className="far fa-clock-o mr-1"></i>
-                  In the last hour
+                  {/* <i className="far fa-clock-o mr-1"></i> */}
+                  Detail
                 </div>
               </Card.Footer>
             </Card>
@@ -110,29 +164,34 @@ function Dashboard() {
                 <Row>
                   <Col xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-favourite-28 text-primary"></i>
+                      <FontAwesomeIcon
+                        icon={faMoneyBill1Wave}
+                        color={"green"}
+                      />
                     </div>
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Followers</p>
-                      <Card.Title as="h4">+45K</Card.Title>
+                      <p className="card-category">Pendapatan</p>
+                      <Card.Title as="h4"><CurrencyFormat
+              thousandSeparator={true}
+              prefix={"Rp "}
+              displayType={"text"}
+              value={pendapatan}
+            /></Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
               <Card.Footer>
                 <hr></hr>
-                <div className="stats">
-                  <i className="fas fa-redo mr-1"></i>
-                  Update now
-                </div>
+                <div className="stats">Detail</div>
               </Card.Footer>
             </Card>
           </Col>
         </Row>
         <Row>
-          <Col md="12">
+          {/* <Col md="12">
             <Card>
               <Card.Header>
                 <Card.Title as="h4">Global Sales by Top Locations</Card.Title>
@@ -269,11 +328,11 @@ function Dashboard() {
                 </Row>
               </Card.Body>
             </Card>
-          </Col>
+          </Col> */}
         </Row>
         <Row>
           <Col md="4">
-            <Card>
+            {/* <Card>
               <Card.Header>
                 <Card.Title as="h4">Email Statistics</Card.Title>
                 <p className="card-category">Last Campaign Performance</p>
@@ -301,38 +360,41 @@ function Dashboard() {
                   Campaign sent 2 days ago
                 </div>
               </Card.Footer>
-            </Card>
+            </Card> */}
           </Col>
-          <Col md="8">
+          <Col md="12">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Users Behavior</Card.Title>
-                <p className="card-category">24 Hours performance</p>
+                <Card.Title as="h4">
+                  <b>Grafik Penjualan</b>
+                </Card.Title>
+                {/* <p className="card-category">24 Hours performance</p> */}
               </Card.Header>
               <Card.Body>
                 <ChartistGraph
                   data={{
                     labels: [
-                      "9:00AM",
-                      "12:00AM",
-                      "3:00PM",
-                      "6:00PM",
-                      "9:00PM",
-                      "12:00PM",
-                      "3:00AM",
-                      "6:00AM",
-                      "",
+                      "Jan",
+                      "Feb",
+                      "Mar",
+                      "Apr",
+                      "Mei",
+                      "Jun",
+                      "Jul",
+                      "Agust",
+                      "Sept",
+                      "Okt",
+                      "Nov",
+                      "Des",
                     ],
                     series: [
-                      [287, 385, 490, 492, 554, 586, 698, 695, 630],
-                      [67, 152, 143, 240, 287, 335, 435, 437, 470],
-                      [23, 113, 67, 108, 190, 239, 307, 308, 430],
+                     listPenghasilan
                     ],
                   }}
                   type="Line"
                   options={{
                     low: 0,
-                    high: 800,
+                    high: max,
                     showArea: false,
                     height: "245px",
                     axisX: {
@@ -344,6 +406,7 @@ function Dashboard() {
                     fullWidth: true,
                     chartPadding: {
                       right: 50,
+                      left: 50,
                     },
                   }}
                   responsiveOptions={[
@@ -363,21 +426,19 @@ function Dashboard() {
               <Card.Footer>
                 <div className="legend">
                   <i className="fas fa-circle mr-1 text-info"></i>
-                  Open <i className="fas fa-circle mr-1 text-danger"></i>
-                  Click <i className="fas fa-circle mr-1 text-warning"></i>
-                  Click Second Time
+                  Pendapatan tiap bulan
                 </div>
                 <hr></hr>
-                <div className="stats">
+                {/* <div className="stats">
                   <i className="fas fa-history"></i>
                   Updated 3 minutes ago
-                </div>
+                </div> */}
               </Card.Footer>
             </Card>
           </Col>
         </Row>
         <Row>
-          <Col md="6">
+          {/* <Col md="6">
             <Card>
               <Card.Header>
                 <Card.Title as="h4">2017 Sales</Card.Title>
@@ -402,31 +463,11 @@ function Dashboard() {
                     ],
                     series: [
                       [
-                        542,
-                        443,
-                        320,
-                        780,
-                        553,
-                        453,
-                        326,
-                        434,
-                        568,
-                        610,
-                        756,
+                        542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756,
                         895,
                       ],
                       [
-                        412,
-                        243,
-                        280,
-                        580,
-                        453,
-                        353,
-                        300,
-                        364,
-                        368,
-                        410,
-                        636,
+                        412, 243, 280, 580, 453, 353, 300, 364, 368, 410, 636,
                         695,
                       ],
                     ],
@@ -468,8 +509,8 @@ function Dashboard() {
                 </div>
               </Card.Footer>
             </Card>
-          </Col>
-          <Col md="6">
+          </Col> */}
+          {/* <Col md="6">
             <Card className="card-tasks">
               <Card.Header>
                 <Card.Title as="h4">Tasks</Card.Title>
@@ -783,7 +824,7 @@ function Dashboard() {
                 </div>
               </Card.Footer>
             </Card>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </>

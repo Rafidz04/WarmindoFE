@@ -39,7 +39,7 @@ function LoginPage() {
               <Form action='' className='form' method=''>
                 <Card className={'card-login ' + cardClasses}>
                   <Card.Header>
-                    <h3 className='header text-center'>Login Client </h3>
+                    <h3 className='header text-center'>Login</h3>
                   </Card.Header>
                   <Card.Body>
                     <Card.Body>
@@ -90,7 +90,7 @@ function LoginPage() {
           style={{
             backgroundImage:
               'url(' +
-              require('assets/img/full-screen-image-2.jpg').default +
+              require('assets/img/bgnew.jpeg').default +
               ')',
           }}
         ></div>

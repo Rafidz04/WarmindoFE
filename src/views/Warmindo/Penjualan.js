@@ -241,7 +241,7 @@ function Penjualan() {
                                   }}
                                 >
                                   <td>{val.namaBarang}</td>
-                                  <td>{val.harga}</td>
+                                  <td>{val.hargaBarang}</td>
                                   <td>{val.kuantitas}</td>
                                   <td>{val.totalKuantitas}</td>
                                 </tr>

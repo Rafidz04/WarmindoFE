@@ -97,27 +97,30 @@ function Sidebar({ routes, image, background }) {
           </Nav.Item>
         );
       }
-      return (
-        <Nav.Item
-          className={activeRoute(prop.layout + prop.path)}
-          key={key}
-          as='li'
-        >
-          <Nav.Link to={prop.layout + prop.path} as={Link}>
-            {prop.icon ? (
-              <>
-                <i className={prop.icon} />
-                <p>{prop.name}</p>
-              </>
-            ) : (
-              <>
-                <span className='sidebar-mini'>{prop.mini}</span>
-                <span className='sidebar-normal'>{prop.name}</span>
-              </>
-            )}
-          </Nav.Link>
-        </Nav.Item>
-      );
+      if(prop.show){
+        return (
+          <Nav.Item
+            className={activeRoute(prop.layout + prop.path)}
+            key={key}
+            as='li'
+          >
+            <Nav.Link to={prop.layout + prop.path} as={Link}>
+              {prop.icon ? (
+                <>
+                  <i className={prop.icon} />
+                  <p>{prop.name}</p>
+                </>
+              ) : (
+                <>
+                  <span className='sidebar-mini'>{prop.mini}</span>
+                  <span className='sidebar-normal'>{prop.name}</span>
+                </>
+              )}
+            </Nav.Link>
+          </Nav.Item>
+        );
+      }
+      
     });
   };
   // verifies if routeName is the one active (in browser input)

@@ -1,6 +1,6 @@
 import React from "react";
 import Select from "react-select";
-import { addStok, editStok, getAllStock } from "../../stores";
+import { addStok, deleteStok, editStok, getAllStock } from "../../stores";
 //4
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -22,6 +22,7 @@ import {
 } from "react-bootstrap";
 import ReactTable from "components/ReactTable/ReactTable.js";
 import CurrencyFormat from "react-currency-format";
+import Swal from 'sweetalert2'
 
 function StokBarang() {
   //2
@@ -88,6 +89,38 @@ function StokBarang() {
                 Edit
                 {/* <i className='fa fa-edit' /> */}
               </Button>{" "}
+              <Button
+              onClick={() => {
+                Swal.fire({
+                  title: 'Are you sure?',
+                  text: "You won't be able to revert this!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    deleteStok(dispatch,val._id).then((response)=>{
+                      getAllStock(dispatch);
+                      Swal.fire(
+                        'Deleted!',
+                        'Stok berhasil dihapus!',
+                        'success'
+                      )
+                    })
+                    
+                  }
+                })
+               
+              }}
+              size="sm"
+              variant="danger"
+              className="danger"
+            >
+              Delete
+              {/* <i className='fa fa-edit' /> */}
+            </Button>{" "}
             </div>
           ),
         });

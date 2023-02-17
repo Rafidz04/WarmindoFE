@@ -179,7 +179,6 @@ export async function getAllOrder(dispatch, data, history) {
         token: localStorage.getItem("tokenWarmindo"),
       },
     })
-    console.log(response)
     dispatch({type:"LIST_ORDER",data:response.data.data})
     return response
   } catch (error) {
@@ -187,6 +186,79 @@ export async function getAllOrder(dispatch, data, history) {
   
   }
 }
+
+export async function deleteUser(dispatch, data, history) {
+  let _id = data;
+  try {
+    const response = await baseAxios.delete("/userWarmindo/deleteUserWarmindo",{
+      headers: {
+        token: localStorage.getItem("tokenWarmindo"),
+      },
+      data: {
+        _id: _id
+      }
+    })
+
+    return response
+  } catch (error) {
+    return err.response
+  
+  }
+}
+
+
+export async function deleteStok(dispatch, data, history) {
+  let _id = data;
+  try {
+    const response = await baseAxios.delete("/stokWarmindo/deletestokwarmindo",{
+      headers: {
+        token: localStorage.getItem("tokenWarmindo"),
+      },
+      data: {
+        _id: _id
+      }
+    })
+
+    return response
+  } catch (error) {
+    return err.response
+  
+  }
+}
+
+export async function getAllTotalPendapatan(dispatch, data, history) {
+  let _id = data;
+  try {
+    const response = await baseAxios.get("/orderWarmindo/getAllPendapatanWarmindo",{
+      headers: {
+        token: localStorage.getItem("tokenWarmindo"),
+      },
+    })
+    dispatch({type:"LIST_PENDAPATAN",data:response.data.data})
+    return response
+  } catch (error) {
+    return err.response
+  
+  }
+}
+
+export async function getGrafikPenghasilan(dispatch, data, history) {
+  let _id = data;
+  try {
+    const response = await baseAxios.get("/orderWarmindo/getGrafikPenghasilan",{
+      headers: {
+        token: localStorage.getItem("tokenWarmindo"),
+      },
+    })
+    console.log(response,"Pendapatan")
+    dispatch({type:"GRAFIK_PENGHASILAN",data:response.data.data})
+    return response
+  } catch (error) {
+    return err.response
+  
+  }
+}
+
 
 export function logout() {
   localStorage.removeItem("tokenWarmindo");
