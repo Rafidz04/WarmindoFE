@@ -22,6 +22,7 @@ import {
 
 function Sidebar({ routes, image, background }) {
   const auth = useSelector((state) => state.authReducer);
+  console.log(auth,">>>??????")
   // to check for active links and opened collapses
   let location = useLocation();
   // this is for the user collapse

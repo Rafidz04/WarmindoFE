@@ -21,6 +21,7 @@ import {
 } from "react-bootstrap";
 import ReactTable from "components/ReactTable/ReactTable.js";
 import CurrencyFormat from "react-currency-format";
+import moment from "moment";
 
 function Penjualan() {
   //2
@@ -61,6 +62,7 @@ function Penjualan() {
         });
         tmp.push({
           ...val,
+          tanggalTransaksi: moment(val.createdAt).format("DD MMMM YYYY"),
           totalHarga: (
             <CurrencyFormat
               thousandSeparator={true}
@@ -129,6 +131,10 @@ function Penjualan() {
                 {
                   Header: "Nama Pelanggan",
                   accessor: "namaPelanggan",
+                },
+                {
+                  Header: "Tanggal Transaksi",
+                  accessor: "tanggalTransaksi",
                 },
                 {
                   Header: "Total Pembayaran",
@@ -241,9 +247,27 @@ function Penjualan() {
                                   }}
                                 >
                                   <td>{val.namaBarang}</td>
-                                  <td>{val.hargaBarang}</td>
+                                  <td>
+                                    {
+                                      <CurrencyFormat
+                                        thousandSeparator={true}
+                                        prefix={"Rp "}
+                                        displayType={"text"}
+                                        value={val.hargaBarang}
+                                      />
+                                    }
+                                  </td>
                                   <td>{val.kuantitas}</td>
-                                  <td>{val.totalKuantitas}</td>
+                                  <td>
+                                    {
+                                      <CurrencyFormat
+                                        thousandSeparator={true}
+                                        prefix={"Rp "}
+                                        displayType={"text"}
+                                        value={val.totalKuantitas}
+                                      />
+                                    }
+                                  </td>
                                 </tr>
                               );
                             })}

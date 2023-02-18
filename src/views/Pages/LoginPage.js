@@ -13,6 +13,7 @@ import {
   Container,
   Col,
 } from 'react-bootstrap';
+import Swal from "sweetalert2";
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ function LoginPage() {
                   <Card.Body>
                     <Card.Body>
                       <Form.Group>
-                        <label>Username</label>
+                        <label>Email</label>
                         <Form.Control
                           value={username}
                           onChange={(e) => {
@@ -71,7 +72,14 @@ function LoginPage() {
                     <Button
                       onClick={(e) => {
                         e.preventDefault()
-                        login(dispatch, { username, password }, history);
+                        {username==="" || password ===""?Swal.fire({
+                          position: 'center',
+                          icon: 'error',
+                          title: 'Email atau password tidak boleh kosong',
+                          showConfirmButton: false,
+                          timer: 1500
+                        }): login(dispatch, { username, password }, history);}
+                       
                       }}
                       className='btn-wd'
                       type='submit'

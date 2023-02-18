@@ -22,15 +22,23 @@ export function login(dispatch, data, history) {
     })
     .then(async (respon) => {
       localStorage.setItem("tokenWarmindo", respon.data.token);
+      localStorage.setItem("email", respon.data.email);
       history.push("/admin/dashboard");
-      let { email, username } = respon.data;
+      let { email, username,role } = respon.data;
       dispatch({
         type: "SET_IDENTITY",
-        data: { email, username },
+        data: { email, username,role },
       });
       // history.push('/admin/dashboard');
     })
     .catch((err) => {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Email atau password anda salah',
+        showConfirmButton: false,
+        timer: 1500
+      })
       console.log(err.response, "ini error");
     });
 }
@@ -49,11 +57,12 @@ export function refresh(dispatch) {
       headers: { token: localStorage.getItem("tokenWarmindo") },
     })
     .then(async (respon) => {
-      let { email, username } = respon.data;
+      let { email, username,role } = respon.data;
       localStorage.setItem("tokenWarmindo", respon.data.token);
+      localStorage.setItem("email", respon.data.email);
       dispatch({
         type: "SET_IDENTITY",
-        data: { email, username },
+        data: { email, username,role },
       });
       Swal.close();
     })
@@ -259,8 +268,27 @@ export async function getGrafikPenghasilan(dispatch, data, history) {
   }
 }
 
+export async function editPassword(dispatch, data, history) {
+ 
+  try {
+    const respon = await baseAxios.patch(
+      "/userWarmindo/updatePassword",
+      data,
+      {
+        headers: {
+          token: localStorage.getItem("tokenWarmindo"),
+        },
+      }
+    );
+    return respon;
+  } catch (err) {
+    return err.response;
+  }
+}
+
 
 export function logout() {
   localStorage.removeItem("tokenWarmindo");
+  localStorage.removeItem("email");
   window.location.replace("/auth/login-page");
 }

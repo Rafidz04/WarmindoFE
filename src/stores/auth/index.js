@@ -1,6 +1,7 @@
 const initialState = {
   username: "",
   email: "",
+  role:0,
   //2
   listStock: [],
   listUser: [],
@@ -17,6 +18,7 @@ const authReducer = (state = initialState, action) => {
         ...state,
         username: data.username,
         email: data.email,
+        role:data.role
       };
     //1
     case "LIST_STOCK":

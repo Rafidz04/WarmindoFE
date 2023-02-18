@@ -57,73 +57,69 @@ function StokBarang() {
     let tmp = [];
     auth.listStock &&
       auth.listStock.map((val) => {
-        // let harga = 0
-        // val.data.harga((value)=>{
-        //   harga+= value.totalStock
-        // })
-        tmp.push({
-          ...val,
-          harga: (
-            <CurrencyFormat
-              thousandSeparator={true}
-              prefix={"Rp "}
-              displayType={"text"}
-              value={val.harga}
-            />
-          ),
-          //harga:`Rp ${val.harga}`,
-          image: <img src={val.fotoProduk}></img>,
-          actions: (
-            <div className="actions-right">
-              <Button
+          tmp.push({
+            ...val,
+            harga: (
+              <CurrencyFormat
+                thousandSeparator={true}
+                prefix={"Rp "}
+                displayType={"text"}
+                value={val.harga}
+              />
+            ),
+            //harga:`Rp ${val.harga}`,
+            image: <img src={val.fotoProduk}></img>,
+            actions: <div className="actions-right">
+                <Button
+                  onClick={() => {
+                    console.log(val);
+                    setIdStock(val._id);
+                    setTotalStock(val.totalStock);
+                    setHarga(val.harga);
+                    setModalEdit(!modalEdit);
+                  }}
+                  size="sm"
+                  className="primary"
+                >
+                  Edit
+                  {/* <i className='fa fa-edit' /> */}
+                </Button>{" "}
+                <Button
                 onClick={() => {
-                  console.log(val);
-                  setIdStock(val._id);
-                  setTotalStock(val.totalStock);
-                  setHarga(val.harga);
-                  setModalEdit(!modalEdit);
+                  Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      deleteStok(dispatch,val._id).then((response)=>{
+                        getAllStock(dispatch);
+                        Swal.fire(
+                          'Deleted!',
+                          'Stok berhasil dihapus!',
+                          'success'
+                        )
+                      })
+                      
+                    }
+                  })
+                 
                 }}
                 size="sm"
-                className="primary"
+                variant="danger"
+                className="danger"
               >
-                Edit
+                Delete
                 {/* <i className='fa fa-edit' /> */}
               </Button>{" "}
-              <Button
-              onClick={() => {
-                Swal.fire({
-                  title: 'Are you sure?',
-                  text: "You won't be able to revert this!",
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    deleteStok(dispatch,val._id).then((response)=>{
-                      getAllStock(dispatch);
-                      Swal.fire(
-                        'Deleted!',
-                        'Stok berhasil dihapus!',
-                        'success'
-                      )
-                    })
-                    
-                  }
-                })
-               
-              }}
-              size="sm"
-              variant="danger"
-              className="danger"
-            >
-              Delete
-              {/* <i className='fa fa-edit' /> */}
-            </Button>{" "}
-            </div>
-          ),
-        });
+              </div>
+            
+          })
+       
       }, []);
     setListStock(tmp);
   }, [auth.listStock]);
@@ -134,14 +130,14 @@ function StokBarang() {
           <Card.Header>
             <Card.Title as="h4">
               List Stok{" "}
-              <Button
+              {auth.role===1?<Button
                 className="btn-wd mr-1"
                 variant="primary"
                 style={{ marginLeft: 25 }}
                 onClick={() => setModal(!modal)}
               >
                 Add Stok
-              </Button>
+              </Button>:null}
             </Card.Title>
           </Card.Header>
           <Card.Body>
@@ -171,8 +167,8 @@ function StokBarang() {
                   accessor: "image",
                 },
                 {
-                  Header: "Aksi",
-                  accessor: "actions",
+                  Header: `${auth.role===1?"Aksi":""}`,
+                  accessor: `${auth.role===1?"actions":"action"}`,
                   sortable: false,
                   filterable: false,
                 },
