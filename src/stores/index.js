@@ -12,7 +12,7 @@ export * from './auth/function';
 export * from './errorHandler';
 // server api
 // export const baseUrl = process.env.REACT_APP_URL
-export const baseUrl = 'http://192.168.1.11:9030/';
+export const baseUrl = 'http://warmindo88.my.id/';
 // export const baseUrl = 'https://uptight-bee-woolens.cyclic.app/';
 
 export const baseAxios = axios.create({
