@@ -22,7 +22,7 @@ import {
 } from "react-bootstrap";
 import ReactTable from "components/ReactTable/ReactTable.js";
 import CurrencyFormat from "react-currency-format";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 function StokBarang() {
   //2
@@ -35,6 +35,8 @@ function StokBarang() {
   const [modalEdit, setModalEdit] = React.useState(false);
   const [harga, setHarga] = React.useState(0);
   const [totalStock, setTotalStock] = React.useState(0);
+  const [minimStock, setMinimStock] = React.useState(0);
+  const [status, setStatus] = React.useState("");
   const [kategori, setKategori] = React.useState("");
   const [namaBarang, setNamaBarang] = React.useState("");
   const [validasi, setValidasi] = React.useState(false);
@@ -57,34 +59,38 @@ function StokBarang() {
     let tmp = [];
     auth.listStock &&
       auth.listStock.map((val) => {
-          tmp.push({
-            ...val,
-            harga: (
-              <CurrencyFormat
-                thousandSeparator={true}
-                prefix={"Rp "}
-                displayType={"text"}
-                value={val.harga}
-              />
-            ),
-            //harga:`Rp ${val.harga}`,
-            image: <img src={val.fotoProduk}></img>,
-            actions: <div className="actions-right">
-                <Button
-                  onClick={() => {
-                    console.log(val);
-                    setIdStock(val._id);
-                    setTotalStock(val.totalStock);
-                    setHarga(val.harga);
-                    setModalEdit(!modalEdit);
-                  }}
-                  size="sm"
-                  className="primary"
-                >
-                  Edit
-                  {/* <i className='fa fa-edit' /> */}
-                </Button>{" "}
-                <Button
+        tmp.push({
+          ...val,
+          harga: (
+            <CurrencyFormat
+              thousandSeparator={true}
+              prefix={"Rp "}
+              displayType={"text"}
+              value={val.harga}
+            />
+          ),
+          //harga:`Rp ${val.harga}`,
+          image: <img src={val.fotoProduk}></img>,
+          actions: (
+            <div className="actions-right">
+              <Button
+                variant={val.status === "aktif" ? "primary" : "danger"}
+                onClick={() => {
+                  console.log(val);
+                  setIdStock(val._id);
+                  setTotalStock(val.totalStock);
+                  setHarga(val.harga);
+                  setMinimStock(val.minimStock);
+                  setStatus(val.status);
+                  setModalEdit(!modalEdit);
+                }}
+                size="sm"
+                className="primary"
+              >
+                Edit
+                {/* <i className='fa fa-edit' /> */}
+              </Button>{" "}
+              {/* <Button
                 onClick={() => {
                   Swal.fire({
                     title: 'Are you sure?',
@@ -114,12 +120,11 @@ function StokBarang() {
                 className="danger"
               >
                 Delete
-                {/* <i className='fa fa-edit' /> */}
-              </Button>{" "}
-              </div>
-            
-          })
-       
+               
+              </Button>{" "} */}
+            </div>
+          ),
+        });
       }, []);
     setListStock(tmp);
   }, [auth.listStock]);
@@ -130,14 +135,16 @@ function StokBarang() {
           <Card.Header>
             <Card.Title as="h4">
               List Stok{" "}
-              {auth.role===1?<Button
-                className="btn-wd mr-1"
-                variant="primary"
-                style={{ marginLeft: 25 }}
-                onClick={() => setModal(!modal)}
-              >
-                Add Stok
-              </Button>:null}
+              {auth.role === 1 ? (
+                <Button
+                  className="btn-wd mr-1"
+                  variant="primary"
+                  style={{ marginLeft: 25 }}
+                  onClick={() => setModal(!modal)}
+                >
+                  Add Stok
+                </Button>
+              ) : null}
             </Card.Title>
           </Card.Header>
           <Card.Body>
@@ -159,16 +166,24 @@ function StokBarang() {
                   accessor: "totalStock",
                 },
                 {
+                  Header: "Minimal Stock Barang",
+                  accessor: "minimStock",
+                },
+                {
                   Header: "Kategori",
                   accessor: "kategori",
+                },
+                {
+                  Header: "Status Produk",
+                  accessor: "status",
                 },
                 {
                   Header: "Foto Produk",
                   accessor: "image",
                 },
                 {
-                  Header: `${auth.role===1?"Aksi":""}`,
-                  accessor: `${auth.role===1?"actions":"action"}`,
+                  Header: `${auth.role === 1 ? "Aksi" : ""}`,
+                  accessor: `${auth.role === 1 ? "actions" : "action"}`,
                   sortable: false,
                   filterable: false,
                 },
@@ -240,6 +255,25 @@ function StokBarang() {
                     <Row>
                       <Col sm="12">
                         <Form.Group>
+                          <label>Minimal Stock</label>
+                          <Form.Control
+                            onChange={(e) => {
+                              setMinimStock(e.target.value);
+                              // setDataBaru({
+                              //   ...dataBaru,
+                              //   gedung: e.target.value,
+                              // });
+                            }}
+                            // placeholder="Masukan Nama Gedung"
+                            type="number"
+                            min={0}
+                          ></Form.Control>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm="12">
+                        <Form.Group>
                           <label>Harga</label>
                           <Form.Control
                             onChange={(e) => {
@@ -259,7 +293,7 @@ function StokBarang() {
                     <Row>
                       <Col sm="12">
                         <Form.Group>
-                          <label>Status</label>
+                          <label>Kategori</label>
                           <Select
                             className="react-select primary"
                             classNamePrefix="react-select"
@@ -269,6 +303,7 @@ function StokBarang() {
                             options={[
                               { value: "makanan", label: "Makanan" },
                               { value: "minuman", label: "Minuman" },
+                              { value: "toping", label: "Toping" },
                             ]}
                             placeholder="Pilih"
                           />
@@ -300,6 +335,7 @@ function StokBarang() {
                             namaBarang: namaBarang,
                             harga: harga,
                             totalStock: totalStock,
+                            minimStock: minimStock,
                             kategori: kategori,
                             fotoProduk: foto,
                           }).then((val) => {
@@ -385,6 +421,45 @@ function StokBarang() {
                     </Form.Group>
                   </Col>
                 </Row>
+                <Row>
+                  <Col sm="12">
+                    <Form.Group>
+                      <label>Minimal Stock</label>
+                      <Form.Control
+                        value={minimStock}
+                        onChange={(e) => {
+                          setMinimStock(e.target.value);
+                          // setDataBaru({
+                          //   ...dataBaru,
+                          //   gedung: e.target.value,
+                          // });
+                        }}
+                        // placeholder="Masukan Nama Gedung"
+                        type="number"
+                        min={0}
+                      ></Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col sm="12">
+                    <Form.Group>
+                      <label>Status</label>
+                      <Select
+                        className="react-select primary"
+                        classNamePrefix="react-select"
+                        name="singleSelect"
+                        value={status}
+                        onChange={(value) => setStatus(value)}
+                        options={[
+                          { value: "aktif", label: "Aktif" },
+                          { value: "tidak aktif", label: "Tidak Aktif" },
+                        ]}
+                        placeholder="Pilih"
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
               </Form>
             </Col>
           </Row>
@@ -399,6 +474,8 @@ function StokBarang() {
                   idStock: idStock,
                   totalStock: totalStock,
                   harga: harga,
+                  minimStock: minimStock,
+                  status: status.value,
                 }).then((respon) => {
                   if (respon.status === 200) {
                     setModalEdit(!modalEdit);

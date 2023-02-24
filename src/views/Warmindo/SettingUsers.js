@@ -4,6 +4,7 @@ import {
   addUser,
   deleteUser,
   editPassword,
+  editStatus,
   getAllUser,
   logout,
 } from "../../stores";
@@ -62,70 +63,93 @@ function SettingUsers() {
       auth.listUser.map((val) => {
         tmp.push({
           ...val,
-          status: val.role === 1 ? "owner" : "kasir",
+          jabatan: val.role === 1 ? "owner" : "kasir",
           actionss:
-          val.email===localStorage.getItem("email")?
-          (<div className="actions-right">
-          <Button
-            variant="warning"
-            onClick={() => {
-              setIdUser(val._id);
-              setModalEdit(!modalEdit);
-            }}
-            size="sm"
-            className="warning"
-            style={{width:150}}
-          >
-            Edit Password
-            {/* <i className='fa fa-edit' /> */}
-          </Button></div>):null,
-          actions: (
-            <div className="actions-right">
-              <Button
-                variant="warning"
-                onClick={() => {
-                  setIdUser(val._id);
-                  setModalEdit(!modalEdit);
-                }}
-                size="sm"
-                className="warning"
-              >
-                Edit Password
-                {/* <i className='fa fa-edit' /> */}
-              </Button>{" "}
-              {val.role === 1 ? null : (
+            val.email === localStorage.getItem("email") ? (
+              <div className="actions-right">
                 <Button
+                  variant="warning"
                   onClick={() => {
-                    Swal.fire({
-                      title: "Are you sure?",
-                      text: "You won't be able to revert this!",
-                      icon: "warning",
-                      showCancelButton: true,
-                      confirmButtonColor: "#3085d6",
-                      cancelButtonColor: "#d33",
-                      confirmButtonText: "Yes, delete it!",
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        deleteUser(dispatch, val._id).then((response) => {
-                          getAllUser(dispatch);
-                          Swal.fire(
-                            "Deleted!",
-                            "User berhasil dihapus!",
-                            "success"
-                          );
-                        });
-                      }
-                    });
+                    setIdUser(val._id);
+                    setModalEdit(!modalEdit);
                   }}
                   size="sm"
-                  variant="danger"
-                  className="danger"
+                  className="warning"
+                  style={{ width: 150 }}
                 >
-                  Delete
+                  Edit Password
                   {/* <i className='fa fa-edit' /> */}
                 </Button>
-              )}
-            </div>
+              </div>
+            ) : null,
+          actions: (
+            <>
+              <Row className="actions-right">
+                <Col>
+                  {val.role === 1 ? null : (
+                    <label className="d-flex align-items-center">
+                      <Form.Check
+                        type="switch"
+                        id={val._id}
+                        defaultChecked={val.status === "aktif" ? true : false}
+                        onChange={(e) => {
+                          editStatus(dispatch, {
+                            check: e.target.checked,
+                            data: val,
+                          }).then((val) => {
+                            getAllUser(dispatch);
+                          });
+                        }}
+                        style={{ width: 10 }}
+                      />
+                    </label>
+                    // <Button
+                    //   onClick={() => {
+                    //     Swal.fire({
+                    //       title: "Are you sure?",
+                    //       text: "You won't be able to revert this!",
+                    //       icon: "warning",
+                    //       showCancelButton: true,
+                    //       confirmButtonColor: "#3085d6",
+                    //       cancelButtonColor: "#d33",
+                    //       confirmButtonText: "Yes, delete it!",
+                    //     }).then((result) => {
+                    //       if (result.isConfirmed) {
+                    //         deleteUser(dispatch, val._id).then((response) => {
+                    //           getAllUser(dispatch);
+                    //           Swal.fire(
+                    //             "Deleted!",
+                    //             "User berhasil dihapus!",
+                    //             "success"
+                    //           );
+                    //         });
+                    //       }
+                    //     });
+                    //   }}
+                    //   size="sm"
+                    //   variant="danger"
+                    //   className="danger"
+                    // >
+                    //   Delete
+                    // </Button>
+                  )}
+                </Col>
+                <Col>
+                  <Button
+                    variant="warning"
+                    onClick={() => {
+                      setIdUser(val._id);
+                      setModalEdit(!modalEdit);
+                    }}
+                    size="sm"
+                    className="warning"
+                  >
+                    Edit Password
+                    {/* <i className='fa fa-edit' /> */}
+                  </Button>
+                </Col>
+              </Row>
+            </>
           ),
           // image:<img src={val.fotoProduk}></img>
         });
@@ -162,6 +186,10 @@ function SettingUsers() {
                 {
                   Header: "Nama",
                   accessor: "nama",
+                },
+                {
+                  Header: "Jabatan",
+                  accessor: "jabatan",
                 },
                 {
                   Header: "Status",

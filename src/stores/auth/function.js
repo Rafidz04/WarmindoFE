@@ -24,22 +24,21 @@ export function login(dispatch, data, history) {
       localStorage.setItem("tokenWarmindo", respon.data.token);
       localStorage.setItem("email", respon.data.email);
       history.push("/admin/dashboard");
-      let { email, username,role } = respon.data;
+      let { email, username, role } = respon.data;
       dispatch({
         type: "SET_IDENTITY",
-        data: { email, username,role },
+        data: { email, username, role },
       });
       // history.push('/admin/dashboard');
     })
     .catch((err) => {
       Swal.fire({
-        position: 'center',
-        icon: 'error',
-        title: 'Email atau password anda salah',
+        position: "center",
+        icon: "error",
+        title: err.response.data.message,
         showConfirmButton: false,
-        timer: 1500
-      })
-      console.log(err.response, "ini error");
+        timer: 1500,
+      });
     });
 }
 export function refresh(dispatch) {
@@ -57,12 +56,12 @@ export function refresh(dispatch) {
       headers: { token: localStorage.getItem("tokenWarmindo") },
     })
     .then(async (respon) => {
-      let { email, username,role } = respon.data;
+      let { email, username, role } = respon.data;
       localStorage.setItem("tokenWarmindo", respon.data.token);
       localStorage.setItem("email", respon.data.email);
       dispatch({
         type: "SET_IDENTITY",
-        data: { email, username,role },
+        data: { email, username, role },
       });
       Swal.close();
     })
@@ -88,7 +87,8 @@ export async function addUser(dispatch, data, history) {
 export async function addStok(dispatch, data, history) {
   let formData = new FormData();
   formData.append("namaBarang", data.namaBarang);
-  formData.append("totalStock",data.totalStock)
+  formData.append("totalStock", data.totalStock);
+  formData.append("minimStock", data.minimStock);
   formData.append("harga", data.harga);
   formData.append("kategori", data.kategori.value);
   formData.append("fotoProduk", data.fotoProduk);
@@ -109,7 +109,7 @@ export async function addStok(dispatch, data, history) {
 }
 
 export async function editStok(dispatch, data, history) {
-  console.log(data)
+  console.log(data);
   try {
     const respon = await baseAxios.patch(
       "/stokWarmindo//updateStokWarmindo",
@@ -151,129 +151,145 @@ export async function addOrder(dispatch, data, history) {
 //1
 export async function getAllStock(dispatch, data, history) {
   try {
-    const response = await baseAxios.get("/stokWarmindo/getallStokWarmindo",{
+    const response = await baseAxios.get("/stokWarmindo/getallStokWarmindo", {
       headers: {
         token: localStorage.getItem("tokenWarmindo"),
       },
-    })
-    console.log(response)
-    dispatch({type:"LIST_STOCK",data:response.data.data})
-    return response
+    });
+    console.log(response);
+    dispatch({ type: "LIST_STOCK", data: response.data.data });
+    return response;
   } catch (error) {
-    return err.response
-  
+    return err.response;
   }
 }
 
 export async function getAllUser(dispatch, data, history) {
   try {
-    const response = await baseAxios.get("/userWarmindo/getallUserWarmindo",{
+    const response = await baseAxios.get("/userWarmindo/getallUserWarmindo", {
       headers: {
         token: localStorage.getItem("tokenWarmindo"),
       },
-    })
+    });
     // console.log(response)
-  dispatch({type:"LIST_USER",data:response.data.data})
-    return response
+    dispatch({ type: "LIST_USER", data: response.data.data });
+    return response;
   } catch (error) {
-    return err.response
-  
+    return err.response;
   }
 }
 
 export async function getAllOrder(dispatch, data, history) {
   try {
-    const response = await baseAxios.get("/orderWarmindo/getallorderWarmindo",{
+    const response = await baseAxios.get("/orderWarmindo/getallorderWarmindo", {
       headers: {
         token: localStorage.getItem("tokenWarmindo"),
       },
-    })
-    dispatch({type:"LIST_ORDER",data:response.data.data})
-    return response
+    });
+    dispatch({ type: "LIST_ORDER", data: response.data.data });
+    return response;
   } catch (error) {
-    return err.response
-  
+    return err.response;
   }
 }
 
 export async function deleteUser(dispatch, data, history) {
   let _id = data;
   try {
-    const response = await baseAxios.delete("/userWarmindo/deleteUserWarmindo",{
-      headers: {
-        token: localStorage.getItem("tokenWarmindo"),
-      },
-      data: {
-        _id: _id
+    const response = await baseAxios.delete(
+      "/userWarmindo/deleteUserWarmindo",
+      {
+        headers: {
+          token: localStorage.getItem("tokenWarmindo"),
+        },
+        data: {
+          _id: _id,
+        },
       }
-    })
+    );
 
-    return response
+    return response;
   } catch (error) {
-    return err.response
-  
+    return err.response;
   }
 }
-
 
 export async function deleteStok(dispatch, data, history) {
   let _id = data;
   try {
-    const response = await baseAxios.delete("/stokWarmindo/deletestokwarmindo",{
-      headers: {
-        token: localStorage.getItem("tokenWarmindo"),
-      },
-      data: {
-        _id: _id
+    const response = await baseAxios.delete(
+      "/stokWarmindo/deletestokwarmindo",
+      {
+        headers: {
+          token: localStorage.getItem("tokenWarmindo"),
+        },
+        data: {
+          _id: _id,
+        },
       }
-    })
+    );
 
-    return response
+    return response;
   } catch (error) {
-    return err.response
-  
+    return err.response;
   }
 }
 
 export async function getAllTotalPendapatan(dispatch, data, history) {
   let _id = data;
   try {
-    const response = await baseAxios.get("/orderWarmindo/getAllPendapatanWarmindo",{
-      headers: {
-        token: localStorage.getItem("tokenWarmindo"),
-      },
-    })
-    dispatch({type:"LIST_PENDAPATAN",data:response.data.data})
-    return response
+    const response = await baseAxios.get(
+      "/orderWarmindo/getAllPendapatanWarmindo",
+      {
+        headers: {
+          token: localStorage.getItem("tokenWarmindo"),
+        },
+      }
+    );
+    dispatch({ type: "LIST_PENDAPATAN", data: response.data.data });
+    return response;
   } catch (error) {
-    return err.response
-  
+    return err.response;
   }
 }
 
 export async function getGrafikPenghasilan(dispatch, data, history) {
   let _id = data;
   try {
-    const response = await baseAxios.get("/orderWarmindo/getGrafikPenghasilan",{
-      headers: {
-        token: localStorage.getItem("tokenWarmindo"),
-      },
-    })
-    console.log(response,"Pendapatan")
-    dispatch({type:"GRAFIK_PENGHASILAN",data:response.data.data})
-    return response
+    const response = await baseAxios.get(
+      "/orderWarmindo/getGrafikPenghasilan",
+      {
+        headers: {
+          token: localStorage.getItem("tokenWarmindo"),
+        },
+      }
+    );
+    console.log(response, "Pendapatan");
+    dispatch({ type: "GRAFIK_PENGHASILAN", data: response.data.data });
+    return response;
   } catch (error) {
-    return err.response
-  
+    return err.response;
   }
 }
 
 export async function editPassword(dispatch, data, history) {
- 
+  try {
+    const respon = await baseAxios.patch("/userWarmindo/updatePassword", data, {
+      headers: {
+        token: localStorage.getItem("tokenWarmindo"),
+      },
+    });
+    return respon;
+  } catch (err) {
+    return err.response;
+  }
+}
+
+export async function editStatus(dispatch, data, history) {
   try {
     const respon = await baseAxios.patch(
-      "/userWarmindo/updatePassword",
-      data,
+      "/userWarmindo/editStatusUser",
+      { idUser: data.data._id, status: data.check ? "aktif" : "tidak aktif" },
       {
         headers: {
           token: localStorage.getItem("tokenWarmindo"),
@@ -285,7 +301,6 @@ export async function editPassword(dispatch, data, history) {
     return err.response;
   }
 }
-
 
 export function logout() {
   localStorage.removeItem("tokenWarmindo");

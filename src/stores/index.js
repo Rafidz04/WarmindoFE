@@ -1,19 +1,20 @@
-import axios from 'axios';
-import { applyMiddleware, combineReducers, createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import { reduxSoldierMiddleware } from 'redux-soldier';
+import axios from "axios";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { reduxSoldierMiddleware } from "redux-soldier";
 
 // reducer
-import authReducer from './auth';
-import dashboardReducer from './dashboard';
+import authReducer from "./auth";
+import dashboardReducer from "./dashboard";
 
 // function
-export * from './auth/function';
-export * from './errorHandler';
+export * from "./auth/function";
+export * from "./errorHandler";
 // server api
 // export const baseUrl = process.env.REACT_APP_URL
-export const baseUrl = 'http://18.142.241.43/';
+// export const baseUrl = 'http://18.142.241.43/';
 // export const baseUrl = 'https://uptight-bee-woolens.cyclic.app/';
+export const baseUrl = "http://localhost:9040/";
 
 export const baseAxios = axios.create({
   baseURL: baseUrl,

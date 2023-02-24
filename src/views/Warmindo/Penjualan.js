@@ -129,6 +129,10 @@ function Penjualan() {
               data={listOrder}
               columns={[
                 {
+                  Header: "Nama Kasir",
+                  accessor: "namaKasir",
+                },
+                {
                   Header: "Nama Pelanggan",
                   accessor: "namaPelanggan",
                 },

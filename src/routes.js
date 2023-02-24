@@ -15,41 +15,41 @@
 
 */
 //Page Template
-import Dashboard from 'views/Dashboard.js';
-import Buttons from 'views/Components/Buttons.js';
-import GridSystem from 'views/Components/GridSystem.js';
-import Panels from 'views/Components/Panels.js';
-import SweetAlert from 'views/Components/SweetAlertPage.js';
-import Notifications from 'views/Components/Notifications.js';
-import Icons from 'views/Components/Icons.js';
-import Typography from 'views/Components/Typography.js';
-import RegularForms from 'views/Forms/RegularForms.js';
-import ExtendedForms from 'views/Forms/ExtendedForms.js';
-import ValidationForms from 'views/Forms/ValidationForms.js';
-import Wizard from 'views/Forms/Wizard/Wizard.js';
-import RegularTables from 'views/Tables/RegularTables.js';
-import ExtendedTables from 'views/Tables/ExtendedTables.js';
-import ReactTables from 'views/Tables/ReactTables.js';
-import GoogleMaps from 'views/Maps/GoogleMaps.js';
-import FullScreenMap from 'views/Maps/FullScreenMap.js';
-import VectorMap from 'views/Maps/VectorMap.js';
-import Charts from 'views/Charts.js';
-import Calendar from 'views/Calendar.js';
-import UserPage from 'views/Pages/UserPage.js';
+import Dashboard from "views/Dashboard.js";
+import Buttons from "views/Components/Buttons.js";
+import GridSystem from "views/Components/GridSystem.js";
+import Panels from "views/Components/Panels.js";
+import SweetAlert from "views/Components/SweetAlertPage.js";
+import Notifications from "views/Components/Notifications.js";
+import Icons from "views/Components/Icons.js";
+import Typography from "views/Components/Typography.js";
+import RegularForms from "views/Forms/RegularForms.js";
+import ExtendedForms from "views/Forms/ExtendedForms.js";
+import ValidationForms from "views/Forms/ValidationForms.js";
+import Wizard from "views/Forms/Wizard/Wizard.js";
+import RegularTables from "views/Tables/RegularTables.js";
+import ExtendedTables from "views/Tables/ExtendedTables.js";
+import ReactTables from "views/Tables/ReactTables.js";
+import GoogleMaps from "views/Maps/GoogleMaps.js";
+import FullScreenMap from "views/Maps/FullScreenMap.js";
+import VectorMap from "views/Maps/VectorMap.js";
+import Charts from "views/Charts.js";
+import Calendar from "views/Calendar.js";
+import UserPage from "views/Pages/UserPage.js";
 
 //Page Custom
-import LoginPage from 'views/Pages/LoginPage.js';
-import SettingUsers from 'views/Warmindo/SettingUsers';
-import StokBarang from 'views/Warmindo/StokBarang';
-import Penjualan from 'views/Warmindo/Penjualan';
+import LoginPage from "views/Pages/LoginPage.js";
+import SettingUsers from "views/Warmindo/SettingUsers";
+import StokBarang from "views/Warmindo/StokBarang";
+import Penjualan from "views/Warmindo/Penjualan";
 
 var routes = [
   {
-    show:true,
-    path: '/dashboard',
-    layout: '/admin',
-    name: 'Dashboard',
-    icon: 'nc-icon nc-chart-pie-35',
+    show: true,
+    path: "/dashboard",
+    layout: "/admin",
+    name: "Dashboard",
+    icon: "nc-icon nc-chart-pie-35",
     component: Dashboard,
   },
   // {
@@ -110,43 +110,48 @@ var routes = [
   //     },
   //   ],
   // },
-  // {
-  //   collapse: true,
-  //   path: '/forms',
-  //   name: 'Forms',
-  //   state: 'openForms',
-  //   icon: 'nc-icon nc-notes',
-  //   views: [
-  //     {
-  //       path: '/regular-forms',
-  //       layout: '/admin',
-  //       name: 'Regular Forms',
-  //       mini: 'RF',
-  //       component: RegularForms,
-  //     },
-  //     {
-  //       path: '/extended-forms',
-  //       layout: '/admin',
-  //       name: 'Extended Forms',
-  //       mini: 'EF',
-  //       component: ExtendedForms,
-  //     },
-  //     {
-  //       path: '/validation-forms',
-  //       layout: '/admin',
-  //       name: 'Validation Forms',
-  //       mini: 'VF',
-  //       component: ValidationForms,
-  //     },
-  //     {
-  //       path: '/wizard',
-  //       layout: '/admin',
-  //       name: 'Wizard',
-  //       mini: 'W',
-  //       component: Wizard,
-  //     },
-  //   ],
-  // },
+  {
+    show: true,
+    collapse: true,
+    path: "/forms",
+    name: "Forms",
+    state: "openForms",
+    icon: "nc-icon nc-notes",
+    views: [
+      {
+        show: true,
+        path: "/regular-forms",
+        layout: "/admin",
+        name: "Regular Forms",
+        mini: "RF",
+        component: RegularForms,
+      },
+      {
+        show: true,
+        path: "/extended-forms",
+        layout: "/admin",
+        name: "Extended Forms",
+        mini: "EF",
+        component: ExtendedForms,
+      },
+      {
+        show: true,
+        path: "/validation-forms",
+        layout: "/admin",
+        name: "Validation Forms",
+        mini: "VF",
+        component: ValidationForms,
+      },
+      {
+        show: true,
+        path: "/wizard",
+        layout: "/admin",
+        name: "Wizard",
+        mini: "W",
+        component: Wizard,
+      },
+    ],
+  },
   // {
   //   collapse: true,
   //   path: '/tables',
@@ -222,11 +227,11 @@ var routes = [
   //   component: Calendar,
   // },
   {
-    show:false,
-    path: '/login-page',
-    layout: '/auth',
-    name: 'Login Page',
-    mini: 'LP',
+    show: false,
+    path: "/login-page",
+    layout: "/auth",
+    name: "Login Page",
+    mini: "LP",
     component: LoginPage,
   },
   // {
@@ -255,66 +260,28 @@ var routes = [
   //   ],
   // },
   {
-    show:true,
-    path: '/user',
-    layout: '/admin',
-    name: 'Users',
-    icon: 'nc-icon nc-circle-09',
+    show: true,
+    path: "/user",
+    layout: "/admin",
+    name: "Users",
+    icon: "nc-icon nc-circle-09",
     component: SettingUsers,
   },
   {
-    show:true,
-    path: '/stok-barang',
-    layout: '/admin',
-    name: 'Stok-Barang',
-    icon: 'nc-icon nc-map-big',
+    show: true,
+    path: "/stok-barang",
+    layout: "/admin",
+    name: "Stok-Barang",
+    icon: "nc-icon nc-map-big",
     component: StokBarang,
   },
   {
-    show:true,
-    path: '/penjualan',
-    layout: '/admin',
-    name: 'Penjualan',
-    icon: 'nc-icon nc-cart-simple',
+    show: true,
+    path: "/penjualan",
+    layout: "/admin",
+    name: "Penjualan",
+    icon: "nc-icon nc-cart-simple",
     component: Penjualan,
   },
- 
-  // {
-  //   collapse: true,
-  //   path: '/monitoringkebersihan',
-  //   name: 'Monitoring',
-  //   state: 'openKebersihan',
-  //   icon: 'nc-icon nc-puzzle-10',
-  //   views: [
-  //     {
-  //       path: '/dashboardmonitoring',
-  //       layout: '/admin',
-  //       name: 'Dashboard',
-  //       mini: 'D',
-  //       component: DashboardMonitoringPage,
-  //     },
-  //     {
-  //       path: '/rekapmonitoring',
-  //       layout: '/admin',
-  //       name: 'Rekap Monitoring',
-  //       mini: 'RM',
-  //       component: RekapMonitoringPage,
-  //     },
-  //     {
-  //       path: '/settingarea',
-  //       layout: '/admin',
-  //       name: 'Setting Area',
-  //       mini: 'SA',
-  //       component: SettingGedungPage,
-  //     },
-  //     {
-  //       path: '/settingshift',
-  //       layout: '/admin',
-  //       name: 'Setting Shift',
-  //       mini: 'SS',
-  //       component: SettingShiftPage,
-  //     },
-  //   ],
-  // },
 ];
 export default routes;
