@@ -1,13 +1,17 @@
 const initialState = {
   username: "",
   email: "",
-  role:0,
+  role: 0,
   //2
   listStock: [],
   listUser: [],
   listOrder: [],
   listPendapatan: [],
   grafikPenghasilan: [],
+  totalPenghasilan: 0,
+  grafikPelanggan: [],
+  totalPelanggan: 0,
+  listHarusOrder: [],
 };
 
 const authReducer = (state = initialState, action) => {
@@ -18,7 +22,7 @@ const authReducer = (state = initialState, action) => {
         ...state,
         username: data.username,
         email: data.email,
-        role:data.role
+        role: data.role,
       };
     //1
     case "LIST_STOCK":
@@ -46,6 +50,27 @@ const authReducer = (state = initialState, action) => {
         ...state,
         grafikPenghasilan: data,
       };
+    case "TOTAL_PENGHASILAN":
+      return {
+        ...state,
+        totalPenghasilan: data,
+      };
+    case "GRAFIK_PELANGGAN":
+      return {
+        ...state,
+        grafikPelanggan: data,
+      };
+    case "TOTAL_PELANGGAN":
+      return {
+        ...state,
+        totalPelanggan: data,
+      };
+    case "LIST_HARUSORDER":
+      return {
+        ...state,
+        listHarusOrder: data,
+      };
+
     default:
       return state;
   }

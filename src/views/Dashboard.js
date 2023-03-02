@@ -4,6 +4,7 @@ import ChartistGraph from "react-chartist";
 // react components used to create a SVG / Vector map
 import { VectorMap } from "react-jvectormap";
 import CurrencyFormat from "react-currency-format";
+import Select from "react-select";
 
 // react-bootstrap components
 import {
@@ -20,9 +21,13 @@ import {
   Container,
   Row,
   Col,
+  ModalBody,
+  Modal,
+  ModalTitle,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBell,
   faBowlFood,
   faMoneyBill1Wave,
   faMugHot,
@@ -33,6 +38,8 @@ import { getAllStock } from "stores";
 import { getAllOrder } from "stores";
 import { getAllTotalPendapatan } from "stores";
 import { getGrafikPenghasilan } from "stores";
+import { getGrafikPelanggan } from "stores";
+import { getHarusOrder } from "stores";
 
 function Dashboard() {
   const dispatch = useDispatch();
@@ -40,16 +47,31 @@ function Dashboard() {
   const [jumlahMakanan, setJumlahMakanan] = React.useState(0);
   const [jumlahMinuman, setJumlahMinuman] = React.useState(0);
   const [jumlahPelanggan, setJumlahPelanggan] = React.useState(0);
-  const [pendapatan,setPendapatan] = React.useState(0)
-  const [listPenghasilan,setListPenghasilan] = React.useState([])
+  const [pendapatan, setPendapatan] = React.useState(0);
+  const [totalPelanggan, setTotalPelanggan] = React.useState(0);
+  const [listPenghasilan, setListPenghasilan] = React.useState([]);
+  const [listPelanggan, setListPelanggan] = React.useState([]);
+  const [listHarusOrder, setListHarusOrder] = React.useState([]);
+  const [tahun, setTahun] = React.useState(new Date().getFullYear().toString());
+  const [singleSelect, setSingleSelect] = React.useState(
+    new Date().getFullYear().toString()
+  );
+  const [listYear, setListYear] = React.useState([]);
   const max = Math.max(...listPenghasilan);
+  const maxPel = Math.max(...listPelanggan);
+  const [modal, setModal] = React.useState(false);
 
   React.useEffect(() => {
     getAllStock(dispatch);
     getAllOrder(dispatch);
-    getAllTotalPendapatan(dispatch)
-    getGrafikPenghasilan(dispatch)
+    getAllTotalPendapatan(dispatch);
+    getHarusOrder(dispatch);
   }, []);
+
+  React.useEffect(() => {
+    getGrafikPenghasilan(dispatch, { tahun });
+    getGrafikPelanggan(dispatch, { tahun });
+  }, [singleSelect]);
 
   React.useEffect(() => {
     let tmpMakanan = [];
@@ -68,17 +90,78 @@ function Dashboard() {
     setJumlahPelanggan(auth.listOrder && auth.listOrder.length);
     auth.listPendapatan &&
       auth.listPendapatan.map((val) => {
-        penghasilan+=val.totalKuantitas
+        penghasilan += val.totalKuantitas;
       });
 
-      setPendapatan(penghasilan)
-      setListPenghasilan(auth.grafikPenghasilan)
-      
-  }, [auth.listStock, auth.listOrder,auth.listPendapatan,auth.grafikPenghasilan]);
+    // setPendapatan(penghasilan);
+    setListPenghasilan(auth.grafikPenghasilan);
+    setListPelanggan(auth.grafikPelanggan);
+    setPendapatan(auth.totalPenghasilan);
+    setTotalPelanggan(auth.totalPelanggan);
+    setListHarusOrder(auth.listHarusOrder);
+  }, [
+    auth.listStock,
+    auth.listOrder,
+    auth.listPendapatan,
+    auth.grafikPenghasilan,
+    auth.totalPenghasilan,
+    auth.totalPelanggan,
+    auth.listHarusOrder,
+  ]);
+
+  let year = new Date().getFullYear();
+
+  const getYear = () => {
+    let tmp = [];
+    for (let i = 3; i >= 0; i--) {
+      let years = year--;
+      tmp.push({
+        value: years,
+        label: years,
+      });
+    }
+    setListYear(tmp);
+  };
+  React.useEffect(() => {
+    getYear();
+  }, []);
 
   return (
     <>
       <Container fluid>
+        <Row style={{ marginBottom: 20 }}>
+          <Col md="8"></Col>
+          <Col md="3">
+            <Select
+              className="react-select primary"
+              classNamePrefix="react-select"
+              name="singleSelect"
+              value={singleSelect}
+              onChange={(value) => {
+                setTahun(value.value);
+                setSingleSelect(value);
+              }}
+              options={listYear}
+              placeholder="Tahun"
+            />
+          </Col>
+          <Col md="1">
+            <Button
+              // disabled
+              variant={listHarusOrder.length > 0 ? "danger" : "success"}
+              onClick={() => {
+                listHarusOrder.length > 0
+                  ? setModal(!modal)
+                  : alert("Seluruh Stock Tercukupi!!!");
+              }}
+              size="md"
+              className="primary"
+            >
+              <FontAwesomeIcon icon={faBell} color={"#FFFFFF"} />
+              {/* <i className="fa fa-edit" /> */}
+            </Button>{" "}
+          </Col>
+        </Row>
         <Row>
           <Col lg="3" sm="6">
             <Card className="card-stats">
@@ -144,7 +227,7 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Pembeli</p>
-                      <Card.Title as="h4">{jumlahPelanggan}</Card.Title>
+                      <Card.Title as="h4">{totalPelanggan}</Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -173,12 +256,14 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Pendapatan</p>
-                      <Card.Title as="h4"><CurrencyFormat
-              thousandSeparator={true}
-              prefix={"Rp "}
-              displayType={"text"}
-              value={pendapatan}
-            /></Card.Title>
+                      <Card.Title as="h4">
+                        <CurrencyFormat
+                          thousandSeparator={true}
+                          prefix={"Rp "}
+                          displayType={"text"}
+                          value={pendapatan}
+                        />
+                      </Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -190,183 +275,13 @@ function Dashboard() {
             </Card>
           </Col>
         </Row>
+
         <Row>
-          {/* <Col md="12">
-            <Card>
-              <Card.Header>
-                <Card.Title as="h4">Global Sales by Top Locations</Card.Title>
-                <p className="card-category">All products that were shipped</p>
-              </Card.Header>
-              <Card.Body>
-                <Row>
-                  <Col md="6">
-                    <Table responsive>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <div className="flag">
-                              <img
-                                alt="..."
-                                src={require("assets/img/flags/US.png").default}
-                              ></img>
-                            </div>
-                          </td>
-                          <td>USA</td>
-                          <td className="text-right">2.920</td>
-                          <td className="text-right">53.23%</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="flag">
-                              <img
-                                alt="..."
-                                src={require("assets/img/flags/DE.png").default}
-                              ></img>
-                            </div>
-                          </td>
-                          <td>Germany</td>
-                          <td className="text-right">1.300</td>
-                          <td className="text-right">20.43%</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="flag">
-                              <img
-                                alt="..."
-                                src={require("assets/img/flags/AU.png").default}
-                              ></img>
-                            </div>
-                          </td>
-                          <td>Australia</td>
-                          <td className="text-right">760</td>
-                          <td className="text-right">10.35%</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="flag">
-                              <img
-                                alt="..."
-                                src={require("assets/img/flags/GB.png").default}
-                              ></img>
-                            </div>
-                          </td>
-                          <td>United Kingdom</td>
-                          <td className="text-right">690</td>
-                          <td className="text-right">7.87%</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="flag">
-                              <img
-                                alt="..."
-                                src={require("assets/img/flags/RO.png").default}
-                              ></img>
-                            </div>
-                          </td>
-                          <td>Romania</td>
-                          <td className="text-right">600</td>
-                          <td className="text-right">5.94%</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div className="flag">
-                              <img
-                                alt="..."
-                                src={require("assets/img/flags/BR.png").default}
-                              ></img>
-                            </div>
-                          </td>
-                          <td>Brasil</td>
-                          <td className="text-right">550</td>
-                          <td className="text-right">4.34%</td>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </Col>
-                  <Col className="ml-auto mr-auto" md="6">
-                    <VectorMap
-                      map={"world_mill"}
-                      backgroundColor="transparent"
-                      zoomOnScroll={false}
-                      containerStyle={{
-                        width: "100%",
-                        height: "300px",
-                      }}
-                      containerClassName="map"
-                      regionStyle={{
-                        initial: {
-                          fill: "#e4e4e4",
-                          "fill-opacity": 0.9,
-                          stroke: "none",
-                          "stroke-width": 0,
-                          "stroke-opacity": 0,
-                        },
-                      }}
-                      series={{
-                        regions: [
-                          {
-                            values: {
-                              AU: 760,
-                              BR: 550,
-                              CA: 120,
-                              DE: 1300,
-                              FR: 540,
-                              GB: 690,
-                              GE: 200,
-                              IN: 200,
-                              RO: 600,
-                              RU: 300,
-                              US: 2920,
-                            },
-                            scale: ["#AAAAAA", "#444444"],
-                            normalizeFunction: "polynomial",
-                          },
-                        ],
-                      }}
-                    />
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
-          </Col> */}
-        </Row>
-        <Row>
-          <Col md="4">
-            {/* <Card>
-              <Card.Header>
-                <Card.Title as="h4">Email Statistics</Card.Title>
-                <p className="card-category">Last Campaign Performance</p>
-              </Card.Header>
-              <Card.Body>
-                <ChartistGraph
-                  className="ct-perfect-fourth"
-                  data={{
-                    labels: ["40%", "20%", "40%"],
-                    series: [40, 20, 40],
-                  }}
-                  type="Pie"
-                />
-              </Card.Body>
-              <Card.Footer>
-                <div className="legend">
-                  <i className="fas fa-circle mr-1 text-info"></i>
-                  Open <i className="fas fa-circle mr-1 text-danger"></i>
-                  Bounce <i className="fas fa-circle mr-1 text-warning"></i>
-                  Unsubscribe
-                </div>
-                <hr></hr>
-                <div className="stats">
-                  <i className="far fa-clock-o"></i>
-                  Campaign sent 2 days ago
-                </div>
-              </Card.Footer>
-            </Card> */}
-          </Col>
           <Col md="12">
             <Card>
               <Card.Header>
                 <Card.Title as="h4">
-                  <b>Grafik Penjualan</b>
+                  <b>Grafik Penjualan Tahun {tahun}</b>
                 </Card.Title>
                 {/* <p className="card-category">24 Hours performance</p> */}
               </Card.Header>
@@ -387,9 +302,7 @@ function Dashboard() {
                       "Nov",
                       "Des",
                     ],
-                    series: [
-                     listPenghasilan
-                    ],
+                    series: [listPenghasilan],
                   }}
                   type="Line"
                   options={{
@@ -427,6 +340,81 @@ function Dashboard() {
                 <div className="legend">
                   <i className="fas fa-circle mr-1 text-info"></i>
                   Pendapatan tiap bulan
+                </div>
+                <hr></hr>
+                {/* <div className="stats">
+                  <i className="fas fa-history"></i>
+                  Updated 3 minutes ago
+                </div> */}
+              </Card.Footer>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col md="12">
+            <Card>
+              <Card.Header>
+                <Card.Title as="h4">
+                  <b>Grafik Pelanggan Tahun {tahun}</b>
+                </Card.Title>
+                {/* <p className="card-category">24 Hours performance</p> */}
+              </Card.Header>
+              <Card.Body>
+                <ChartistGraph
+                  data={{
+                    labels: [
+                      "Jan",
+                      "Feb",
+                      "Mar",
+                      "Apr",
+                      "Mei",
+                      "Jun",
+                      "Jul",
+                      "Agust",
+                      "Sept",
+                      "Okt",
+                      "Nov",
+                      "Des",
+                    ],
+                    series: [listPelanggan],
+                  }}
+                  type="Line"
+                  options={{
+                    low: 0,
+                    high: maxPel,
+                    showArea: false,
+                    height: "245px",
+                    axisX: {
+                      showGrid: false,
+                    },
+                    lineSmooth: true,
+                    showLine: true,
+                    showPoint: true,
+                    fullWidth: true,
+                    chartPadding: {
+                      right: 50,
+                      left: 50,
+                    },
+                  }}
+                  responsiveOptions={[
+                    [
+                      "screen and (max-width: 640px)",
+                      {
+                        axisX: {
+                          labelInterpolationFnc: function (value) {
+                            return value[0];
+                          },
+                        },
+                      },
+                    ],
+                  ]}
+                />
+              </Card.Body>
+              <Card.Footer>
+                <div className="legend">
+                  <i className="fas fa-circle mr-1 text-info"></i>
+                  Pelanggan tiap bulan
                 </div>
                 <hr></hr>
                 {/* <div className="stats">
@@ -826,6 +814,33 @@ function Dashboard() {
             </Card>
           </Col> */}
         </Row>
+
+        <Modal
+          size="lg"
+          show={modal}
+          onHide={() => setModal(!modal)}
+          aria-labelledby="example-modal-sizes-title-lg"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-lg">
+              <b>List Stock Harus Order</b>
+            </Modal.Title>
+          </Modal.Header>
+          <ModalBody>
+            {listHarusOrder.map((val) => {
+              return (
+                <>
+                  <div>
+                    <p>Nama Barang : {val.namaBarang}</p>
+                    <p>Stock : {val.totalStock}</p>
+                    <p>Minimal Stock : {val.minimStock}</p>
+                  </div>
+                  <hr></hr>
+                </>
+              );
+            })}
+          </ModalBody>
+        </Modal>
       </Container>
     </>
   );

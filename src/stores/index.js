@@ -12,7 +12,7 @@ export * from "./auth/function";
 export * from "./errorHandler";
 // server api
 // export const baseUrl = process.env.REACT_APP_URL
-// export const baseUrl = 'http://18.142.241.43/';
+// export const baseUrl = "https://warmindobe.my.id/";
 // export const baseUrl = 'https://uptight-bee-woolens.cyclic.app/';
 export const baseUrl = "http://localhost:9040/";
 

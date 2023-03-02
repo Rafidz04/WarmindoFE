@@ -254,10 +254,11 @@ export async function getAllTotalPendapatan(dispatch, data, history) {
 }
 
 export async function getGrafikPenghasilan(dispatch, data, history) {
-  let _id = data;
+  let year = data.tahun;
+  console.log(year, "./.dfsfkndskfnsdkfnsd");
   try {
     const response = await baseAxios.get(
-      "/orderWarmindo/getGrafikPenghasilan",
+      `/orderWarmindo/getGrafikPenghasilan?year=${year}`,
       {
         headers: {
           token: localStorage.getItem("tokenWarmindo"),
@@ -266,6 +267,7 @@ export async function getGrafikPenghasilan(dispatch, data, history) {
     );
     console.log(response, "Pendapatan");
     dispatch({ type: "GRAFIK_PENGHASILAN", data: response.data.data });
+    dispatch({ type: "TOTAL_PENGHASILAN", data: response.data.total });
     return response;
   } catch (error) {
     return err.response;
@@ -298,6 +300,40 @@ export async function editStatus(dispatch, data, history) {
     );
     return respon;
   } catch (err) {
+    return err.response;
+  }
+}
+
+export async function getGrafikPelanggan(dispatch, data, history) {
+  let year = data.tahun;
+  console.log(year, "./.dfsfkndskfnsdkfnsd");
+  try {
+    const response = await baseAxios.get(
+      `/orderWarmindo/getGrafikPelanggan?year=${year}`,
+      {
+        headers: {
+          token: localStorage.getItem("tokenWarmindo"),
+        },
+      }
+    );
+    dispatch({ type: "GRAFIK_PELANGGAN", data: response.data.data });
+    dispatch({ type: "TOTAL_PELANGGAN", data: response.data.total });
+    return response;
+  } catch (error) {
+    return err.response;
+  }
+}
+
+export async function getHarusOrder(dispatch, data, history) {
+  try {
+    const response = await baseAxios.get(`/stokWarmindo/getHarusOrder`, {
+      headers: {
+        token: localStorage.getItem("tokenWarmindo"),
+      },
+    });
+    dispatch({ type: "LIST_HARUSORDER", data: response.data });
+    return response;
+  } catch (error) {
     return err.response;
   }
 }
