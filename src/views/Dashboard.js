@@ -79,7 +79,7 @@ function Dashboard() {
     let penghasilan = 0;
     auth.listStock &&
       auth.listStock.map((val) => {
-        if (val.kategori === "makanan") {
+        if (val.kategori === "makanan" || val.kategori === "toping") {
           tmpMakanan.push(val);
         } else {
           tmpMinuman.push(val);
@@ -129,7 +129,7 @@ function Dashboard() {
   return (
     <>
       <Container fluid>
-        <Row style={{ marginBottom: 20 }}>
+        {/* <Row style={{ marginBottom: 20 }}>
           <Col md="8"></Col>
           <Col md="3">
             <Select
@@ -158,12 +158,11 @@ function Dashboard() {
               className="primary"
             >
               <FontAwesomeIcon icon={faBell} color={"#FFFFFF"} />
-              {/* <i className="fa fa-edit" /> */}
             </Button>{" "}
           </Col>
-        </Row>
+        </Row> */}
         <Row>
-          <Col lg="3" sm="6">
+          {/* <Col lg="3" sm="6">
             <Card className="card-stats">
               <Card.Body>
                 <Row>
@@ -183,7 +182,7 @@ function Dashboard() {
               <Card.Footer>
                 <hr></hr>
                 <div className="stats">
-                  {/* <i className="fas fa-redo mr-1"></i> */}
+                 
                   Detail
                 </div>
               </Card.Footer>
@@ -209,12 +208,12 @@ function Dashboard() {
               <Card.Footer>
                 <hr></hr>
                 <div className="stats">
-                  {/* <i className="far fa-calendar-alt mr-1"></i> */}
+                
                   Detail
                 </div>
               </Card.Footer>
             </Card>
-          </Col>
+          </Col> */}
           <Col lg="3" sm="6">
             <Card className="card-stats">
               <Card.Body>
@@ -232,13 +231,13 @@ function Dashboard() {
                   </Col>
                 </Row>
               </Card.Body>
-              <Card.Footer>
+              {/* <Card.Footer>
                 <hr></hr>
                 <div className="stats">
-                  {/* <i className="far fa-clock-o mr-1"></i> */}
+                
                   Detail
                 </div>
-              </Card.Footer>
+              </Card.Footer> */}
             </Card>
           </Col>
           <Col lg="3" sm="6">
@@ -268,11 +267,41 @@ function Dashboard() {
                   </Col>
                 </Row>
               </Card.Body>
-              <Card.Footer>
+              {/* <Card.Footer>
                 <hr></hr>
                 <div className="stats">Detail</div>
-              </Card.Footer>
+              </Card.Footer> */}
             </Card>
+          </Col>
+          <Col lg="3" sm="6">
+            <Select
+              className="react-select primary"
+              classNamePrefix="react-select"
+              name="singleSelect"
+              value={singleSelect}
+              onChange={(value) => {
+                setTahun(value.value);
+                setSingleSelect(value);
+              }}
+              options={listYear}
+              placeholder="Tahun"
+            />
+          </Col>
+          <Col lg="3" sm="6">
+            <Button
+              // disabled
+              variant={listHarusOrder.length > 0 ? "danger" : "success"}
+              onClick={() => {
+                listHarusOrder.length > 0
+                  ? setModal(!modal)
+                  : alert("Seluruh Stock Tercukupi!!!");
+              }}
+              size="md"
+              className="primary"
+            >
+              <FontAwesomeIcon icon={faBell} color={"#FFFFFF"} />
+              {/* <i className="fa fa-edit" /> */}
+            </Button>
           </Col>
         </Row>
 

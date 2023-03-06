@@ -39,6 +39,7 @@ function StokBarang() {
   const [status, setStatus] = React.useState("");
   const [kategori, setKategori] = React.useState("");
   const [namaBarang, setNamaBarang] = React.useState("");
+  const [kodeBarang, setKodeBarang] = React.useState("");
   const [validasi, setValidasi] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const notificationAlertRef = React.useRef(null);
@@ -70,7 +71,9 @@ function StokBarang() {
             />
           ),
           //harga:`Rp ${val.harga}`,
-          image: <img src={val.fotoProduk}></img>,
+          image: (
+            <img src={val.fotoProduk} style={{ width: 40, height: 35 }}></img>
+          ),
           actions: (
             <div className="actions-right">
               <Button
@@ -153,6 +156,10 @@ function StokBarang() {
               data={listStock}
               columns={[
                 {
+                  Header: "Kode Barang",
+                  accessor: "kodeBarang",
+                },
+                {
                   Header: "Nama Barang",
                   accessor: "namaBarang",
                 },
@@ -222,6 +229,24 @@ function StokBarang() {
                           <Form.Control
                             onChange={(e) => {
                               setNamaBarang(e.target.value);
+                              // setDataBaru({
+                              //   ...dataBaru,
+                              //   gedung: e.target.value,
+                              // });
+                            }}
+                            // placeholder="Masukan Nama Gedung"
+                            type="text"
+                          ></Form.Control>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm="12">
+                        <Form.Group>
+                          <label>Kode Barang</label>
+                          <Form.Control
+                            onChange={(e) => {
+                              setKodeBarang(e.target.value);
                               // setDataBaru({
                               //   ...dataBaru,
                               //   gedung: e.target.value,
@@ -333,6 +358,7 @@ function StokBarang() {
 
                           addStok(dispatch, {
                             namaBarang: namaBarang,
+                            kodeBarang: kodeBarang,
                             harga: harga,
                             totalStock: totalStock,
                             minimStock: minimStock,

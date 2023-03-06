@@ -87,6 +87,7 @@ export async function addUser(dispatch, data, history) {
 export async function addStok(dispatch, data, history) {
   let formData = new FormData();
   formData.append("namaBarang", data.namaBarang);
+  formData.append("kodeBarang", data.kodeBarang);
   formData.append("totalStock", data.totalStock);
   formData.append("minimStock", data.minimStock);
   formData.append("harga", data.harga);
@@ -112,7 +113,7 @@ export async function editStok(dispatch, data, history) {
   console.log(data);
   try {
     const respon = await baseAxios.patch(
-      "/stokWarmindo//updateStokWarmindo",
+      "/stokWarmindo/updateStokWarmindo",
       data,
       {
         headers: {

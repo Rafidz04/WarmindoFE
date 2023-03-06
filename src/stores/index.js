@@ -12,9 +12,9 @@ export * from "./auth/function";
 export * from "./errorHandler";
 // server api
 // export const baseUrl = process.env.REACT_APP_URL
-// export const baseUrl = "https://warmindobe.my.id/";
+export const baseUrl = "https://warmindobe.my.id/";
 // export const baseUrl = 'https://uptight-bee-woolens.cyclic.app/';
-export const baseUrl = "http://localhost:9040/";
+// export const baseUrl = "http://localhost:9040/";
 
 export const baseAxios = axios.create({
   baseURL: baseUrl,
